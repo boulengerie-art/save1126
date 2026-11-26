@@ -1,0 +1,12 @@
+{
+  "name": "contract-guide",
+  "version": "0.1.0",
+  "private": true,
+  "description": "지방계약 길라잡이(가칭) — 계약 방법·필요서류 안내 도구",
+  "scripts": {
+    "build": "python3 src/build.py",
+    "test": "node tests/test.js"
+  },
+  "devDependencies": { "xlsx": "0.18.5" },
+  "license": "UNLICENSED"
+}

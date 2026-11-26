@@ -1,11 +1,34 @@
-<div align="center">
+# 지방계약 길라잡이(가칭) (안)
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+사업명과 예상금액을 한 줄로 넣으면 **계약 종류 판별 → 추정가격 계산 → 가능한 계약 방법(근거 조문) → 단계별 필요서류 체크리스트**를 보여주는 단일 HTML 도구.
 
-  <h1>Built with AI Studio</h2>
+> 본 도구는 검토 보조자료이며, 최종 판단은 담당자·계약부서가 함. 최신 법령은 국가법령정보센터(law.go.kr)에서 확인 바람.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## 사용법
+- `index.html`을 내려받아 크롬·엣지에서 더블클릭 → 설치·인터넷 연결 불필요
+- 엑셀 저장(SheetJS 내장), 인쇄(A4), 개조식 텍스트 복사 지원
+- 업체명·사업자번호 등 개인정보는 받지 않으며 입력값은 저장하지 않음
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## 법령 개정 시
+`src/rules.json`만 수정한 뒤 다시 빌드.
+- 기준금액: `methods[].max_estimated_price` / `min_estimated_price_exclusive`
+- 서류: `documents[]` (`cond` 조건 태그로 필터링)
+- 키워드·경고: `keywords`, `warnings`
 
-</div>
+## 개발
+```bash
+npm install      # SheetJS(xlsx 0.18.5) 설치
+npm test         # PRD 8장 테스트 케이스 검증
+npm run build    # src/ → index.html 단일 파일 생성
+```
+
+| 파일 | 내용 |
+|---|---|
+| `src/rules.json` | 규칙 데이터(기준금액·서류·키워드·통합서약서 기준) |
+| `src/engine.js` | 판정 엔진(순수 함수, 같은 입력 → 같은 결과) |
+| `src/template.html` | 화면·출력 |
+| `src/build.py` | 단일 HTML 빌드 스크립트 |
+| `tests/test.js` | 테스트 케이스 |
+
+## 기준 법령
+지방계약법 시행령(대통령령 제36853호, 2026. 11. 24. 시행), 시행규칙(2026. 10. 25. 시행), 지방자치단체 입찰 및 계약 집행기준(행정안전부예규 제395호, 2026. 11. 6. 시행). 화면에 [확인 필요]로 표시된 항목은 원문 대조가 필요함.

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지방계약 길라잡이(가칭) – 계약 방법·필요서류 안내 (안)</title>
+<!--
+  ================================================================
+  규칙 데이터(RULES) — 법령 개정 시 아래 <script id="rules"> 안의 JSON만 수정
+  - 기준금액: methods[].max_estimated_price / min_estimated_price_exclusive
+  - 서류: documents[] (cond 조건 태그로 필터링)
+  - 키워드: keywords / warnings
+  ================================================================
+-->
+<script type="application/json" id="rules">
+/*RULES*/
+</script>
+<style>
+  :root {
+    --ink: #1c2430; --sub: #5a6577; --line: #d9dee6; --bg: #f3f5f8; --card: #fff;
+    --navy: #1f3a5f; --navy-2: #2d5283; --ok: #1d7a46; --ok-bg: #e7f5ec;
+    --cond: #8a5a00; --cond-bg: #fff5de; --no: #8b95a5; --no-bg: #f1f3f6;
+    --danger: #b42318; --danger-bg: #fdecea; --caution-bg: #fff7e0; --info-bg: #eef3fa;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", sans-serif; color: var(--ink); background: var(--bg); font-size: 14px; line-height: 1.55; }
+  header { background: var(--navy); color: #fff; padding: 14px 28px; display: flex; align-items: baseline; gap: 14px; }
+  header h1 { font-size: 19px; margin: 0; letter-spacing: -0.3px; }
+  header .ver { font-size: 12px; opacity: .75; }
+  header .help { margin-left: auto; }
+  header .help button { background: transparent; border: 1px solid rgba(255,255,255,.5); color: #fff; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 18px 24px 40px; }
+  button { font-family: inherit; font-size: 13px; cursor: pointer; border-radius: 6px; border: 1px solid var(--line); background: #fff; padding: 6px 12px; color: var(--ink); }
+  button:hover { border-color: var(--navy-2); }
+  button.primary { background: var(--navy-2); border-color: var(--navy-2); color: #fff; font-weight: bold; }
+  button.primary:hover { background: var(--navy); }
+  button.sel { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  .entry { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .entry-row { display: flex; gap: 8px; }
+  .entry input { flex: 1; font-size: 17px; padding: 11px 14px; border: 2px solid var(--navy-2); border-radius: 8px; font-family: inherit; }
+  .entry input:focus { outline: 3px solid #c9d8ee; }
+  .entry .primary { font-size: 15px; padding: 0 22px; }
+  .chips { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; color: var(--sub); font-size: 12px; }
+  .chips button { border-radius: 999px; font-size: 12px; padding: 4px 12px; background: var(--info-bg); border-color: #c9d6ea; }
+  .recog { margin-top: 10px; font-size: 13px; color: var(--sub); }
+  .recog b { color: var(--ink); }
+  .confirm { margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: var(--cond-bg); border: 1px solid #efd9a6; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .confirm.done { background: var(--ok-bg); border-color: #bfe3cc; }
+
+  .grid { display: grid; grid-template-columns: 380px 1fr; gap: 18px; margin-top: 18px; align-items: start; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .card h2 { font-size: 15px; margin: 0 0 10px; color: var(--navy); }
+  .card h3 { font-size: 14px; margin: 14px 0 6px; }
+  .q { margin-bottom: 12px; }
+  .q > label.t { display: block; font-weight: bold; font-size: 13px; margin-bottom: 4px; }
+  .q .hint { font-size: 12px; color: var(--sub); margin-top: 3px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+  .seg label { border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; font-size: 12.5px; cursor: pointer; background: #fff; user-select: none; }
+  .seg input { display: none; }
+  .seg label.on, .seg label:has(input:checked) { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .field { width: 100%; padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 13.5px; }
+  .field.hl { border: 2px solid var(--danger); background: var(--danger-bg); }
+  .money { text-align: right; }
+  details.opt summary { cursor: pointer; font-weight: bold; color: var(--navy); font-size: 14px; }
+  details.opt[open] summary { margin-bottom: 10px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .disclaimer { background: #fff; border-left: 4px solid var(--navy-2); padding: 8px 12px; font-size: 13px; color: var(--sub); margin-bottom: 14px; border-radius: 4px; }
+  .toolbar { display: flex; gap: 6px; justify-content: flex-end; margin-bottom: 10px; }
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .kv { background: var(--bg); border-radius: 8px; padding: 9px 12px; }
+  .kv .k { font-size: 12px; color: var(--sub); }
+  .kv .v { font-size: 18px; font-weight: bold; }
+  .kv .f { font-size: 12px; color: var(--sub); }
+  .verdict { margin-top: 12px; padding: 12px 14px; border-radius: 8px; font-size: 17px; font-weight: bold; }
+  .verdict.private { background: var(--ok-bg); color: var(--ok); }
+  .verdict.conditional { background: var(--cond-bg); color: var(--cond); }
+  .verdict.bid { background: #e8edf5; color: var(--navy); }
+
+  .warn { border-radius: 8px; padding: 9px 12px; margin-bottom: 8px; font-size: 13px; }
+  .warn b { display: block; margin-bottom: 2px; }
+  .warn.danger { background: var(--danger-bg); border: 1px solid #f3c1bb; }
+  .warn.danger b { color: var(--danger); }
+  .warn.caution { background: var(--caution-bg); border: 1px solid #f0dca2; }
+  .warn.info { background: var(--info-bg); border: 1px solid #d3deee; }
+
+  .method { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+  .badge { display: inline-block; text-align: center; font-weight: bold; font-size: 13px; border-radius: 6px; padding: 5px 0; }
+  .method.possible { border-color: #9fd2b2; } .method.possible .badge { background: var(--ok-bg); color: var(--ok); }
+  .method.conditional { border-color: #e9cf8f; } .method.conditional .badge { background: var(--cond-bg); color: var(--cond); }
+  .method.limited { border-color: #f3c1bb; } .method.limited .badge { background: var(--danger-bg); color: var(--danger); }
+  .method.impossible { background: var(--no-bg); color: var(--no); } .method.impossible .badge { background: #e3e7ec; color: var(--no); }
+  .method .nm { font-weight: bold; }
+  .method .bs { font-size: 12px; color: var(--sub); }
+  .method ul { margin: 4px 0 0; padding-left: 18px; font-size: 12.5px; }
+  .disc { margin-top: 6px; font-size: 12.5px; background: var(--bg); padding: 5px 8px; border-radius: 6px; display: flex; gap: 8px; align-items: center; }
+  .disc button { padding: 2px 8px; font-size: 11.5px; }
+  .more-toggle { font-size: 12.5px; color: var(--sub); cursor: pointer; }
+
+  ol.steps { margin: 4px 0 6px; padding-left: 22px; }
+  ol.steps li { margin-bottom: 3px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 7px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); font-size: 12px; color: var(--sub); font-weight: bold; }
+  td.c { text-align: center; width: 34px; }
+  tr.stage td { background: #e8edf5; font-weight: bold; color: var(--navy); }
+  tr.done td { color: var(--no); text-decoration: line-through; }
+  tr.done td.c, tr.done td.nt { text-decoration: none; }
+  .side { font-size: 11.5px; border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+  .side.o { background: #e8edf5; color: var(--navy); } .side.v { background: #f2ebfa; color: #5b3b8c; }
+  .nt { font-size: 12px; color: var(--sub); }
+  .tip { border-bottom: 1px dotted var(--sub); cursor: help; font-size: 11.5px; color: var(--sub); white-space: nowrap; }
+  .tpl { font-size: 11px; background: var(--ok-bg); color: var(--ok); padding: 1px 5px; border-radius: 4px; }
+  .rep { color: var(--ok); }
+  .pv { font-weight: bold; }
+  .pv.y { color: var(--ok); } .pv.n { color: var(--no); } .pv.b { color: var(--danger); }
+
+  .dimmed .dimmable { opacity: .35; filter: grayscale(1); pointer-events: none; }
+  .empty { text-align: center; color: var(--sub); padding: 60px 20px; background: var(--card); border: 1px dashed var(--line); border-radius: 10px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 9px 18px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.on { opacity: 1; }
+  dialog { border: none; border-radius: 10px; max-width: 640px; padding: 20px 24px; }
+  dialog::backdrop { background: rgba(20,30,45,.45); }
+  dialog dt { font-weight: bold; margin-top: 10px; }
+  dialog dd { margin: 2px 0 0 0; color: var(--sub); }
+  footer { color: var(--sub); font-size: 12px; text-align: center; margin-top: 20px; }
+
+  @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } .summary { grid-template-columns: 1fr; } }
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    body { background: #fff; font-size: 11pt; }
+    header, .entry, aside, .toolbar, .disc button, footer, .noprint { display: none !important; }
+    .wrap { padding: 0; max-width: none; }
+    .grid { display: block; margin: 0; }
+    .card { border: none; padding: 0; margin-bottom: 10px; break-inside: auto; }
+    .method, .warn, tr { break-inside: avoid; }
+    .print-title { display: block !important; font-size: 15pt; font-weight: bold; margin-bottom: 6px; }
+    .method.impossible { display: none; }
+    .dimmed .dimmable { opacity: 1; filter: none; }
+  }
+  .print-title { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>지방계약 길라잡이(가칭) (안)</h1>
+  <span class="ver" id="ver"></span>
+  <span class="help"><button id="btnHelp">용어 도움말</button></span>
+</header>
+
+<div class="wrap">
+  <section class="entry">
+    <div class="entry-row">
+      <input id="oneLine" type="text" autocomplete="off" placeholder="사업명과 예상금액을 한 줄로 입력 (예: 전통역사문화관 기와지붕 보수작업 5천만원)">
+      <button class="primary" id="btnRun">판정</button>
+    </div>
+    <div class="chips" id="chips"><span>예시:</span></div>
+    <div class="recog" id="recog"></div>
+    <div id="confirmBox"></div>
+  </section>
+
+  <div class="grid">
+    <aside>
+      <div class="card" id="qCard">
+        <h2>추가 확인</h2>
+        <div id="questions"></div>
+      </div>
+
+      <div class="card">
+        <details class="opt" id="optBox">
+          <summary>상세 옵션(자동 인식 값 수정)</summary>
+          <div class="q"><label class="t" for="fName">사업명</label><input class="field" id="fName"></div>
+          <div class="q"><label class="t" for="fAmount">예상금액(원)</label><input class="field money" id="fAmount" inputmode="numeric"></div>
+          <div class="q"><label class="t">금액 기준</label>
+            <div class="seg" id="fBasis">
+              <label><input type="radio" name="basis" value="incl" checked>예산액·부가세 포함</label>
+              <label><input type="radio" name="basis" value="excl">추정가격·부가세 제외</label>
+              <label><input type="radio" name="basis" value="free">면세</label>
+            </div></div>
+          <div class="q"><label class="t" for="fMat">관급자재 금액(원, 같은 금액 기준)</label><input class="field money" id="fMat" inputmode="numeric" placeholder="없으면 비움"></div>
+          <div class="q"><label class="t">계약 종류</label><div class="seg" id="fType"></div></div>
+          <div class="q" id="qServiceCat"><label class="t">용역 세부 구분</label><div class="seg" id="fServiceCat"></div></div>
+          <div class="q" id="qGoodsCat"><label class="t">물품 세부 구분</label><div class="seg" id="fGoodsCat"></div></div>
+          <div class="two">
+            <div class="q"><label class="t" for="fContract">계약금액(부가세 포함)</label><input class="field money" id="fContract" inputmode="numeric" placeholder="자동"></div>
+            <div class="q"><label class="t" for="fDays">공사(계약)기간(일)</label><input class="field money" id="fDays" inputmode="numeric" placeholder="예: 30"></div>
+          </div>
+          <div class="hint" style="font-size:12px;color:var(--sub)">계약금액·기간은 통합서약서(5·6·10·11번) 판정에 씀. 비우면 예상금액으로 자동 계산</div>
+          <div class="q" style="margin-top:10px"><label><input type="checkbox" id="fPledge" checked> 계약이행 통합서약서(마산면 v.5)로 서류를 갈음</label></div>
+        </details>
+      </div>
+
+      <div class="card">
+        <details class="opt" id="f9Box">
+          <summary>1인 수의계약 업체별 한도 확인(선택)</summary>
+          <div class="hint" style="font-size:12px;color:var(--sub);margin-bottom:8px">업체명·사업자번호는 받지 않음. 숫자만 입력하며 저장하지 않음(집행기준 제5장 제3절 2-다)</div>
+          <div class="q"><label class="t">계약 기관 단위</label><div class="seg" id="fOrg"></div></div>
+          <div class="two">
+            <div class="q"><label class="t" for="fCnt">올해 같은 업체 1인 수의 횟수</label><input class="field money" id="fCnt" inputmode="numeric" placeholder="0"><div class="hint">500만원 미만 건 제외</div></div>
+            <div class="q"><label class="t" for="fSum">올해 누계 금액(원)</label><input class="field money" id="fSum" inputmode="numeric" placeholder="0"><div class="hint">500만원 미만 건 포함</div></div>
+          </div>
+        </details>
+      </div>
+    </aside>
+
+    <main id="result"><div class="empty">위에 사업명과 예상금액을 입력하거나 예시를 누르면 판정 결과가 여기에 나타남</div></main>
+  </div>
+  <footer id="foot"></footer>
+</div>
+
+<dialog id="helpDlg">
+  <h2 style="margin-top:0;font-size:17px">용어 도움말</h2>
+  <dl>
+    <dt>추정가격</dt><dd>예정가격 결정 전에 산정한 가격으로, 부가세와 관급자재 가격을 제외함. 계약 방법 판단 기준(시행령 제2조 제1호, 제7조)</dd>
+    <dt>추정금액</dt><dd>추정가격 + 부가세 + 관급자재 등. 시행령 제2조에는 정의가 없음 [확인 필요: 다른 규정의 정의]</dd>
+    <dt>관급자재</dt><dd>입력란을 따로 두어 추정가격에서 뺌(시행령 제7조 본문)</dd>
+    <dt>예산액</dt><dd>확보된 예산. 추정금액과 같다고 가정하지 않음 → "부가세 포함"을 선택하면 ÷1.1로만 환산</dd>
+    <dt>계약금액</dt><dd>업체와 실제 체결하는 금액(부가세 포함). 통합서약서 계약보증금·하자보수보증금 등 판정 기준</dd>
+    <dt>판정 원칙</dt><dd>계약 방법·한도·서류 판정은 100% 규칙 데이터로 결정함(같은 입력 → 같은 결과). 기준금액은 "이하" 기준이므로 정확히 같으면 가능으로 판정</dd>
+  </dl>
+  <p style="font-size:12.5px;color:var(--sub)">최신 개정 여부는 국가법령정보센터(law.go.kr)와 행정안전부 예규에서 확인 바람</p>
+  <div style="text-align:right"><button onclick="this.closest('dialog').close()">닫기</button></div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+/*ENGINE*/
+</script>
+<script>
+/*SHEETJS*/
+</script>
+<script>
+(function () {
+  'use strict';
+  var RULES = JSON.parse(document.getElementById('rules').textContent);
+  var E = Engine, fmt = E.fmt;
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var num = function (v) { var n = parseInt(String(v || '').replace(/[^\d]/g, ''), 10); return isNaN(n) ? 0 : n; };
+
+  var S = { name: '', amount: null, basis: 'incl', materials: 0, type: null, typeConfirmed: false, guess: null,
+            workCat: '모름', serviceCat: '일반용역', goodsCat: '구매', vendors: ['미정'], specials: [],
+            heritage: '', contractAmount: 0, days: 0, usePledge: true,
+            f9: { enabled: false, org: '하부행정기관(읍·면)', count: 0, sum: 0 }, amountStatus: null, candidates: [] };
+  var checks = {}, excl = {}, lastR = null;
+
+  $('ver').textContent = '규칙 버전 ' + RULES.version;
+  $('foot').textContent = '기준: ' + RULES.source_note + ' · 인터넷 연결 없이 동작 · 입력값은 저장하지 않음';
+
+  // 예시 칩
+  RULES.examples.forEach(function (ex) {
+    var b = document.createElement('button'); b.textContent = ex;
+    b.onclick = function () { $('oneLine').value = ex; run(); };
+    $('chips').appendChild(b);
+  });
+
+  function seg(el, name, items, type, cur) {
+    el.innerHTML = items.map(function (it) {
+      var id = typeof it === 'string' ? it : it.id, lb = typeof it === 'string' ? it : it.label;
+      var on = Array.isArray(cur) ? cur.indexOf(id) >= 0 : cur === id;
+      return '<label' + (on ? ' class="on"' : '') + '><input type="' + type + '" name="' + name + '" value="' + esc(id) + '"' + (on ? ' checked' : '') + '>' + esc(lb) + '</label>';
+    }).join('');
+  }
+  seg($('fType'), 'type', RULES.contract_types.map(function (t) { return { id: t, label: RULES.contract_type_labels[t] }; }), 'radio', null);
+  seg($('fServiceCat'), 'svc', RULES.service_categories, 'radio', '일반용역');
+  seg($('fGoodsCat'), 'goods', RULES.goods_categories, 'radio', '구매');
+  seg($('fOrg'), 'org', RULES.single_limit.org_units, 'radio', S.f9.org);
+
+  function renderQuestions() {
+    var h = '';
+    if (S.type === '공사') {
+      h += '<div class="q"><label class="t">① 공사 업종</label><div class="seg" id="qWork"></div><div class="hint">2인 견적 한도: 종합 4억 · 전문 2억 · 그 밖 1억6천만원</div></div>';
+      h += '<div class="q"><label class="t">② 대상 건물이 지정·등록 국가유산(문화유산)인가?</label><div class="seg" id="qHer"></div></div>';
+    }
+    h += '<div class="q"><label class="t">' + (S.type === '공사' ? '③' : '①') + ' 계약 예정 업체 유형(복수 선택)</label><div class="seg" id="qVendor"></div><div class="hint">물품·용역 2천만원 초과는 업체 요건이 있어야 수의계약 가능. 미정이면 유형별로 모두 표시</div></div>';
+    h += '<div class="q"><label class="t">' + (S.type === '공사' ? '④' : '②') + ' 특수 사유(해당 시)</label><div class="seg" id="qSpec"></div><div class="hint">시행령 제25조 제1항 각 호(제5호 제외) 해당 시 금액과 관계없이 1인 견적 가능</div></div>';
+    $('questions').innerHTML = h;
+    if (S.type === '공사') {
+      seg($('qWork'), 'work', RULES.work_categories, 'radio', S.workCat);
+      seg($('qHer'), 'her', ['예', '아니오', '모름'], 'radio', S.heritage);
+    }
+    seg($('qVendor'), 'vendor', [{ id: '미정', label: '아직 미정' }].concat(RULES.vendor_types), 'checkbox', S.vendors);
+    seg($('qSpec'), 'spec', RULES.special_reasons, 'checkbox', S.specials);
+    $('qServiceCat').style.display = S.type === '용역' ? '' : 'none';
+    $('qGoodsCat').style.display = S.type === '물품' ? '' : 'none';
+  }
+
+  function syncFields() {
+    $('fName').value = S.name;
+    $('fAmount').value = S.amount ? fmt(S.amount) : '';
+    $('fAmount').classList.toggle('hl', !S.amount);
+    document.querySelectorAll('input[name=basis]').forEach(function (r) { r.checked = r.value === S.basis; });
+    document.querySelectorAll('input[name=type]').forEach(function (r) { r.checked = r.value === S.type; });
+    document.querySelectorAll('input[name=svc]').forEach(function (r) { r.checked = r.value === S.serviceCat; });
+    document.querySelectorAll('input[name=goods]').forEach(function (r) { r.checked = r.value === S.goodsCat; });
+  }
+
+  function run() {
+    var text = $('oneLine').value;
+    if (!text.trim()) { $('oneLine').focus(); return; }
+    var p = E.parseInput(text);
+    S.name = p.name || text.trim();
+    S.amount = p.amount; S.amountStatus = p.status; S.candidates = p.candidates;
+    S.contractAmount = 0; $('fContract').value = '';
+    var g = E.guessType(S.name, RULES);
+    S.guess = g; S.type = g.ambiguous ? null : g.type; S.typeConfirmed = false;
+    S.workCat = g.workCat || '모름';
+    S.serviceCat = g.serviceCat || '일반용역';
+    S.goodsCat = g.goodsCat || '구매';
+    S.heritage = ''; S.specials = []; S.vendors = ['미정'];
+    checks = {}; excl = {};
+    if (p.status !== 'ok') { $('optBox').open = true; }
+    syncFields(); renderQuestions(); renderConfirm(); update();
+    if (p.status !== 'ok') $('fAmount').focus();
+  }
+
+  function renderRecog() {
+    var t = '';
+    if (S.amountStatus === 'ok' || (S.amount && S.amountStatus)) {
+      t = '인식된 금액: <b>' + fmt(S.amount) + '원</b>(' + { incl: '부가세 포함', excl: '부가세 제외', free: '면세' }[S.basis] + ') · 사업명: <b>' + esc(S.name) + '</b> <span style="color:var(--sub)">— 틀리면 상세 옵션에서 수정</span>';
+    }
+    if (!S.amount && S.amountStatus === 'none') t = '<span style="color:var(--danger)"><b>금액을 찾지 못함</b> — 상세 옵션의 예상금액 칸에 직접 입력 바람(판정 보류)</span>';
+    if (!S.amount && S.amountStatus === 'multiple') t = '<span style="color:var(--danger)"><b>금액이 2개 이상 인식됨</b>(' + S.candidates.map(function (v) { return fmt(v) + '원'; }).join(', ') + ') — 예상금액 칸에 하나를 입력 바람</span>';
+    $('recog').innerHTML = t;
+  }
+
+  function renderConfirm() {
+    var g = S.guess; if (!g) { $('confirmBox').innerHTML = ''; return; }
+    var btns = RULES.contract_types.map(function (t) {
+      return '<button data-t="' + t + '" class="' + (S.type === t && S.typeConfirmed ? 'sel' : '') + '">' + RULES.contract_type_labels[t] + '</button>';
+    }).join('');
+    var msg;
+    if (S.typeConfirmed) msg = '계약 종류: <b>' + RULES.contract_type_labels[S.type] + '</b> 확인됨';
+    else if (S.type) msg = '<b>' + RULES.contract_type_labels[S.type] + (g.keywords.length ? '(' + esc(g.keywords.join(', ')) + ')' : '') + '</b>로 판단됨. 맞습니까?';
+    else msg = '<b>계약 종류를 판단하기 어려움</b>' + (g.ambiguousHit.length ? '("' + esc(g.ambiguousHit.join(', ')) + '"은 공사·물품 모두 가능)' : '') + ' — 선택 바람';
+    $('confirmBox').innerHTML = '<div class="confirm ' + (S.typeConfirmed ? 'done' : '') + '">' + msg + ' ' +
+      (S.type && !S.typeConfirmed ? '<button class="primary" data-ok="1">맞음</button> 아니면 → ' : '') + btns + '</div>';
+    $('confirmBox').querySelectorAll('button').forEach(function (b) {
+      b.onclick = function () {
+        if (b.dataset.t) S.type = b.dataset.t;
+        S.typeConfirmed = true;
+        syncFields(); renderQuestions(); renderConfirm(); update();
+      };
+    });
+  }
+
+  function state() {
+    return { name: S.name, amount: S.amount, basis: S.basis, materials: S.materials, type: S.type,
+      workCat: S.workCat, serviceCat: S.serviceCat, goodsCat: S.goodsCat, vendors: S.vendors, specials: S.specials,
+      heritage: S.type === '공사' ? S.heritage : '', contractAmount: S.contractAmount, days: S.days, usePledge: S.usePledge,
+      f9: S.f9 };
+  }
+
+  function update() {
+    renderRecog();
+    if (S.name === '' && !S.amount && !S.guess) return;
+    var R = E.evaluate(state(), RULES);
+    lastR = R;
+    if (!$('fContract').value && R.contractAmount) $('fContract').placeholder = '자동: ' + fmt(R.contractAmount);
+    render(R);
+  }
+
+  function warnHtml(w) { return '<div class="warn ' + w.level + '"><b>' + esc(w.title) + '</b>' + esc(w.message) + '</div>'; }
+
+  function render(R) {
+    var el = $('result');
+    if (R.hold) { el.innerHTML = '<div class="empty"><b>판정 보류</b><br>예상금액을 입력해야 판정할 수 있음</div>'; return; }
+    if (R.holdType) { el.innerHTML = '<div class="empty"><b>판정 보류</b><br>위에서 계약 종류(공사·물품·용역·그 밖)를 선택 바람</div>'; return; }
+    var s = R.input, stages = RULES.stage_names[s.type];
+    var heritageYes = R.warnings.some(function (w) { return w.heritage; });
+    var h = '';
+    h += '<div class="print-title">' + esc(s.name) + ' 계약 방법 검토(안)</div>';
+    h += '<div class="disclaimer">본 결과는 검토 보조자료이며, 최신 법령은 국가법령정보센터에서 확인 바람. 최종 판단은 담당자·계약부서가 함.</div>';
+    h += '<div class="toolbar"><button id="bCopy">결과 복사(개조식)</button><button id="bXlsx">체크리스트 엑셀 저장</button><button id="bPrint">인쇄</button></div>';
+
+    // 1. 요약
+    h += '<div class="card"><h2>1. 금액과 판정 요약</h2><div class="summary">';
+    h += '<div class="kv"><div class="k">예상금액(' + { incl: '부가세 포함', excl: '부가세 제외', free: '면세' }[s.basis] + ')</div><div class="v">' + fmt(s.amount) + '원</div><div class="f">' + esc(E.man(s.amount)) + '</div></div>';
+    h += '<div class="kv"><div class="k">추정가격(계약 방법 판단 기준)</div><div class="v">' + fmt(R.est) + '원</div><div class="f">' + esc(R.estFormula) + '</div></div>';
+    h += '<div class="kv"><div class="k">계약금액(부가세 포함, 서약서 판정용)</div><div class="v">' + fmt(R.contractAmount) + '원</div><div class="f">' + (R.contractAmountIsDefault ? '예상금액 기준 자동 계산' : '직접 입력값') + '</div></div>';
+    h += '</div><div class="verdict ' + R.verdict.kind + ' dimmable">' + esc(R.verdict.text) + '</div></div>';
+
+    // 경고
+    var main = R.warnings.filter(function (w) { return w.level !== 'info'; });
+    if (main.length) h += '<div class="card"><h2>주의 · 경고</h2>' + main.map(warnHtml).join('') + '</div>';
+
+    // 2. 방법
+    var order = { possible: 0, conditional: 1, limited: 2, impossible: 3 };
+    var ms = R.methods.slice().sort(function (a, b) { return order[a.status] - order[b.status]; });
+    var lbl = { possible: '가능', conditional: '조건부', limited: '제한 초과', impossible: '불가' };
+    h += '<div class="card dimmable"><h2>2. 가능한 계약 방법</h2>';
+    if (!R.isPrivate) h += '<div class="method possible"><span class="badge">입찰</span><div><div class="nm">입찰 대상</div><div class="bs">' + esc(RULES.bid.basis) + '</div><div style="font-size:12.5px">수의계약 요건에 해당하지 않음. 입찰(일반·제한경쟁) 세부 절차는 계약부서와 협의</div></div></div>';
+    ms.forEach(function (m, i) {
+      h += '<div class="method ' + m.status + '"><span class="badge">' + lbl[m.status] + '</span><div>';
+      h += '<div class="nm">' + esc(m.name) + '</div><div class="bs">' + esc(m.basis) + '</div>';
+      h += '<div style="font-size:13px">' + esc(m.reason) + '</div>';
+      if (m.status !== 'impossible' && m.notes && m.notes.length) h += '<ul>' + m.notes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>';
+      if (m.disclosure && (m.status === 'possible' || m.status === 'conditional')) h += '<div class="disc"><span>공개내역서 수의계약 사유: <b>' + esc(m.disclosure) + '</b></span><button data-copy="' + esc(m.disclosure) + '">복사</button></div>';
+      h += '</div></div>';
+    });
+    if (R.isPrivate) h += '<div class="nt">※ 수의계약 요건을 갖추었더라도 입찰로 진행할 수 있음</div>';
+    if (R.waiver) h += '<div class="warn info" style="margin-top:8px"><b>견적서 제출 생략 가능(' + esc(RULES.quote_waiver.basis) + ')</b>' + esc(RULES.quote_waiver.items.join(' / ')) + '</div>';
+    h += '</div>';
+
+    // 3. 절차
+    if (R.procedures.length) {
+      h += '<div class="card dimmable"><h2>3. 방법별 진행 절차</h2>';
+      R.procedures.forEach(function (p) {
+        h += '<h3>' + esc(p.title) + ' <span class="nt">(' + esc(p.basis) + ')</span></h3><ol class="steps">' + p.steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
+      });
+      h += '</div>';
+    }
+
+    // F9 결과
+    if (R.f9 && R.f9.applicable) {
+      h += '<div class="card dimmable"><h2>1인 수의계약 업체별 한도</h2>';
+      if (R.f9.exempt) h += '<div class="nt">이번 건은 체결 제한 적용 제외(시행규칙 제33조 해당 또는 추정가격 200만원 미만 공사)</div>';
+      else if (S.f9.enabled) h += '<div class="warn ' + (R.f9.exceeded ? 'danger' : 'info') + '"><b>' + (R.f9.exceeded ? '한도 초과 — 1인 견적 불가, 계약심의위원회 심의 필요' : '한도 이내') + '</b>' +
+        esc(S.f9.org) + ' 기준 · 이번 건 포함 ' + R.f9.count + '회 / 5회' + (R.f9.countedThis ? '' : '(이번 건은 500만원 미만이라 횟수 제외)') + ' · 합계 ' + fmt(R.f9.sum) + '원 / 2억원<br><span class="nt">' + esc(RULES.single_limit.amount_basis_note) + '</span></div>';
+      else h += '<div class="nt">왼쪽 "1인 수의계약 업체별 한도 확인"에 올해 같은 업체와의 계약 횟수·금액을 넣으면 5회·2억원 초과 여부를 판정함</div>';
+      h += '</div>';
+    }
+
+    // 4. 서류
+    var total = R.docs.length, done = R.docs.filter(function (d) { return checks[d.id]; }).length;
+    h += '<div class="card dimmable"><h2>4. 필요서류 체크리스트 <span class="nt" id="docCnt">(' + done + '/' + total + ' 확인)</span></h2>';
+    h += '<table><thead><tr><th class="c">확인</th><th style="width:70px">작성</th><th>서류</th><th>비고</th><th style="width:60px">근거</th></tr></thead><tbody>';
+    [1, 2, 3, 4, 5, 6].forEach(function (st, i) {
+      var ds = R.docs.filter(function (d) { return d.stage === st; });
+      if (!ds.length) return;
+      h += '<tr class="stage"><td colspan="5">' + '①②③④⑤⑥'[i] + ' ' + esc(stages[i]) + '</td></tr>';
+      ds.forEach(function (d) {
+        h += '<tr class="' + (checks[d.id] ? 'done' : '') + '"><td class="c"><input type="checkbox" data-doc="' + d.id + '"' + (checks[d.id] ? ' checked' : '') + '></td>' +
+          '<td><span class="side ' + (d.side === '업체' ? 'v' : 'o') + '">' + esc(d.side) + '</span></td>' +
+          '<td>' + esc(d.name) + (d.template ? ' <span class="tpl">서식 있음</span>' : '') + '</td>' +
+          '<td class="nt' + (d.replaced ? ' rep' : '') + '">' + esc(d.note) + '</td>' +
+          '<td><span class="tip" title="' + esc(d.basis) + '">근거</span></td></tr>';
+      });
+    });
+    h += '</tbody></table><div class="nt" style="margin-top:6px">체크 상태는 이 화면에만 유지됨(저장 안 함). 보관하려면 엑셀로 저장</div></div>';
+
+    // 5. 통합서약서
+    h += '<div class="card dimmable"><h2>5. 통합서약서 체크 안내 <span class="nt">(' + esc(RULES.pledge.title) + ', 계약금액 ' + fmt(R.contractAmount) + '원 기준)</span></h2>';
+    h += '<table><thead><tr><th class="c">연번</th><th>항목</th><th>체크할 칸</th><th>근거</th></tr></thead><tbody>';
+    R.pledge.forEach(function (p) {
+      var cls = /해당없음/.test(p.check) ? 'n' : (/보증서/.test(p.check) ? 'b' : 'y');
+      h += '<tr><td class="c">' + p.no + '</td><td>' + esc(p.item) + '</td><td class="pv ' + cls + '">' + esc(p.check) + '</td><td class="nt">' + esc(p.basis) + '</td></tr>';
+    });
+    h += '</tbody></table>';
+    if (!S.days && s.type === '공사') h += '<div class="nt" style="margin-top:6px">※ 11번은 공사기간(일)이 필요함 — 상세 옵션에 입력</div>';
+    h += '</div>';
+
+    // 6. 배제사유
+    if (R.isPrivate) {
+      h += '<div class="card dimmable"><h2>6. 수의계약 배제사유 확인 <span class="nt">(집행기준 제5장 별표 1 — 해당 없음을 확인하면 체크)</span></h2><table><tbody>';
+      RULES.exclusion_checklist.forEach(function (x, i) {
+        h += '<tr class="' + (excl[i] ? 'done' : '') + '"><td class="c"><input type="checkbox" data-ex="' + i + '"' + (excl[i] ? ' checked' : '') + '></td><td>' + (i + 1) + '. ' + esc(x) + '</td></tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+
+    // 참고
+    var info = R.warnings.filter(function (w) { return w.level === 'info'; });
+    if (info.length) h += '<div class="card"><h2>참고</h2>' + info.map(warnHtml).join('') + '</div>';
+
+    el.innerHTML = h;
+    el.classList.toggle('dimmed', heritageYes);
+
+    // 이벤트
+    el.querySelectorAll('[data-doc]').forEach(function (c) { c.onchange = function () { checks[c.dataset.doc] = c.checked; c.closest('tr').classList.toggle('done', c.checked); $('docCnt').textContent = '(' + R.docs.filter(function (d) { return checks[d.id]; }).length + '/' + total + ' 확인)'; }; });
+    el.querySelectorAll('[data-ex]').forEach(function (c) { c.onchange = function () { excl[c.dataset.ex] = c.checked; c.closest('tr').classList.toggle('done', c.checked); }; });
+    el.querySelectorAll('[data-copy]').forEach(function (b) { b.onclick = function () { copy(b.dataset.copy); }; });
+    $('bCopy').onclick = function () { copy(E.toText(R, RULES)); };
+    $('bPrint').onclick = function () { window.print(); };
+    $('bXlsx').onclick = function () { exportXlsx(R); };
+  }
+
+  function toast(m) { var t = $('toast'); t.textContent = m; t.classList.add('on'); setTimeout(function () { t.classList.remove('on'); }, 1800); }
+  function copy(text) {
+    var fallback = function () {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast('복사됨 — 온나라·메신저에 붙여넣기'); } catch (e) { toast('복사 실패 — 직접 선택해 복사 바람'); }
+      document.body.removeChild(ta);
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(function () { toast('복사됨 — 온나라·메신저에 붙여넣기'); }, fallback);
+    else fallback();
+  }
+
+  function today() { var d = new Date(); return d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0'); }
+
+  function exportXlsx(R) {
+    if (typeof XLSX === 'undefined') { toast('엑셀 모듈을 불러오지 못함'); return; }
+    var s = R.input, stages = RULES.stage_names[s.type], wb = XLSX.utils.book_new();
+    var basisLbl = { incl: '부가세 포함', excl: '부가세 제외', free: '면세' }[s.basis];
+    // 시트1 판정결과 (계산 칸은 수식)
+    var a = [
+      ['계약 방법 검토(안) — 검토 보조자료, 최신 법령은 국가법령정보센터에서 확인 바람'],
+      ['사업명', s.name],
+      ['계약 종류', RULES.contract_type_labels[s.type]],
+      ['예상금액(원)', s.amount],
+      ['금액 기준', basisLbl],
+      ['관급자재(원)', s.materials || 0],
+      ['추정가격(원)', R.est],
+      ['계약금액(원, 부가세 포함)', R.contractAmount],
+      ['판정', R.verdict.text],
+      [],
+      ['구분', '계약 방법', '판정', '사유', '근거', '공개내역서 수의계약 사유']
+    ];
+    var lbl = { possible: '가능', conditional: '조건부 가능', limited: '불가(체결제한 초과)', impossible: '불가' };
+    if (!R.isPrivate) a.push(['입찰', RULES.bid.name, '해당', '수의계약 요건 미해당', RULES.bid.basis, '']);
+    R.methods.forEach(function (m) { a.push([m.group === 'single' ? '1인 견적' : '2인 견적', m.name, lbl[m.status], m.reason, m.basis, m.disclosure || '']); });
+    if (R.waiver) a.push(['견적 생략', '견적서 제출 생략 가능', '가능', '', RULES.quote_waiver.basis, '']);
+    a.push([]); a.push(['기준', RULES.source_note + ' / 규칙 버전 ' + RULES.version]);
+    var ws1 = XLSX.utils.aoa_to_sheet(a);
+    var vatDen = Math.round((1 + RULES.vat_rate) * 100);
+    var estF = s.basis === 'incl' ? 'MAX(0,ROUNDDOWN(B4*100/' + vatDen + ',0)-ROUNDDOWN(B6*100/' + vatDen + ',0))' : 'MAX(0,B4-B6)';
+    ws1['B7'] = { t: 'n', v: R.est, f: estF, z: '#,##0' };
+    ws1['B4'].z = '#,##0'; ws1['B6'].z = '#,##0';
+    if (R.contractAmountIsDefault) ws1['B8'] = { t: 'n', v: R.contractAmount, f: s.basis === 'excl' ? 'ROUNDDOWN((B4-B6)*' + (1 + RULES.vat_rate) + ',0)' : 'B4-B6', z: '#,##0' };
+    else ws1['B8'].z = '#,##0';
+    ws1['!cols'] = [{ wch: 22 }, { wch: 46 }, { wch: 16 }, { wch: 46 }, { wch: 46 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, ws1, '판정결과');
+
+    // 시트2 체크리스트
+    var b = [['단계', '작성 주체', '서류', '비고', '근거', '확인(○)']];
+    R.docs.forEach(function (d) { b.push(['①②③④⑤⑥'[d.stage - 1] + ' ' + stages[d.stage - 1], d.side, d.name, d.note, d.basis, checks[d.id] ? '○' : '']); });
+    var n = b.length;
+    b.push([]); b.push(['전체 서류 수', '', null]); b.push(['확인 완료', '', null]); b.push(['진행률', '', null]);
+    var ws2 = XLSX.utils.aoa_to_sheet(b);
+    ws2['C' + (n + 2)] = { t: 'n', f: 'COUNTA(C2:C' + n + ')', v: n - 1 };
+    ws2['C' + (n + 3)] = { t: 'n', f: 'COUNTIF(F2:F' + n + ',"○")', v: R.docs.filter(function (d) { return checks[d.id]; }).length };
+    ws2['C' + (n + 4)] = { t: 'n', f: 'IF(C' + (n + 2) + '=0,0,C' + (n + 3) + '/C' + (n + 2) + ')', v: 0, z: '0%' };
+    ws2['!cols'] = [{ wch: 14 }, { wch: 10 }, { wch: 44 }, { wch: 48 }, { wch: 44 }, { wch: 9 }];
+    XLSX.utils.book_append_sheet(wb, ws2, '필요서류');
+
+    // 시트3 통합서약서
+    var c = [['연번', '항목', '체크할 칸', '근거'], ['', '계약금액 ' + fmt(R.contractAmount) + '원 기준', '', '']];
+    R.pledge.forEach(function (p) { c.push([p.no, p.item, p.check, p.basis]); });
+    var ws3 = XLSX.utils.aoa_to_sheet(c); ws3['!cols'] = [{ wch: 6 }, { wch: 40 }, { wch: 34 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, ws3, '통합서약서');
+
+    // 시트4 배제사유
+    if (R.isPrivate) {
+      var d4 = [['번호', '배제사유(집행기준 제5장 별표 1)', '해당 없음 확인(○)']];
+      RULES.exclusion_checklist.forEach(function (x, i) { d4.push([i + 1, x, excl[i] ? '○' : '']); });
+      var ws4 = XLSX.utils.aoa_to_sheet(d4); ws4['!cols'] = [{ wch: 6 }, { wch: 80 }, { wch: 16 }];
+      XLSX.utils.book_append_sheet(wb, ws4, '배제사유');
+    }
+    var fname = today() + '_' + (s.name || '사업').replace(/[\\/:*?"<>|\s]+/g, '') + '_계약체크리스트.xlsx';
+    XLSX.writeFile(wb, fname);
+    toast('엑셀 저장: ' + fname);
+  }
+
+  // 입력 이벤트
+  $('btnRun').onclick = run;
+  $('oneLine').addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
+  $('btnHelp').onclick = function () { $('helpDlg').showModal(); };
+  document.addEventListener('change', function (e) {
+    var t = e.target, n = t.name;
+    var sg = t.closest && t.closest('.seg');
+    if (sg) sg.querySelectorAll('label').forEach(function (l) { var i = l.querySelector('input'); l.classList.toggle('on', !!(i && i.checked)); });
+    if (n === 'basis') S.basis = t.value;
+    else if (n === 'type') { S.type = t.value; S.typeConfirmed = true; renderQuestions(); renderConfirm(); }
+    else if (n === 'svc') S.serviceCat = t.value;
+    else if (n === 'goods') S.goodsCat = t.value;
+    else if (n === 'work') S.workCat = t.value;
+    else if (n === 'her') S.heritage = t.value;
+    else if (n === 'org') S.f9.org = t.value;
+    else if (n === 'vendor') {
+      var vals = Array.prototype.slice.call(document.querySelectorAll('input[name=vendor]:checked')).map(function (x) { return x.value; });
+      if (t.value === '미정' && t.checked) vals = ['미정'];
+      else vals = vals.filter(function (v) { return v !== '미정'; });
+      if (!vals.length) vals = ['미정'];
+      S.vendors = vals;
+      seg($('qVendor'), 'vendor', [{ id: '미정', label: '아직 미정' }].concat(RULES.vendor_types), 'checkbox', S.vendors);
+    }
+    else if (n === 'spec') S.specials = Array.prototype.slice.call(document.querySelectorAll('input[name=spec]:checked')).map(function (x) { return x.value; });
+    else if (t.id === 'fPledge') S.usePledge = t.checked;
+    else return;
+    update();
+  });
+  function moneyInput(id, cb) {
+    $(id).addEventListener('input', function () {
+      var el = $(id), v = num(el.value);
+      el.value = v ? fmt(v) : '';
+      cb(v); update();
+    });
+  }
+  moneyInput('fAmount', function (v) { S.amount = v || null; $('fAmount').classList.toggle('hl', !v); if (v) S.amountStatus = S.amountStatus || 'ok'; if (!S.guess) { S.guess = E.guessType(S.name, RULES); S.type = S.guess.ambiguous ? null : S.guess.type; renderQuestions(); renderConfirm(); } });
+  moneyInput('fMat', function (v) { S.materials = v; });
+  moneyInput('fContract', function (v) { S.contractAmount = v; });
+  moneyInput('fCnt', function (v) { S.f9.count = v; S.f9.enabled = true; });
+  moneyInput('fSum', function (v) { S.f9.sum = v; S.f9.enabled = true; });
+  $('fDays').addEventListener('input', function () { S.days = num($('fDays').value); $('fDays').value = S.days || ''; update(); });
+  $('fName').addEventListener('input', function () { S.name = $('fName').value; update(); });
+
+  renderQuestions();
+})();
+</script>
+</body>
+</html>
