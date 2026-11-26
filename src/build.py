@@ -8,4 +8,6 @@ t = t.replace('/*RULES*/', rules, 1).replace('/*ENGINE*/', (src / 'engine.js').r
 x = (root / 'node_modules/xlsx/dist/xlsx.mini.min.js').read_text(encoding='utf-8').replace('</script', '<\\/script')
 t = t.replace('/*SHEETJS*/', '/*! SheetJS Community Edition (Apache-2.0) 내장 */\n' + x, 1)
 (root / 'index.html').write_text(t, encoding='utf-8')
+(root / 'public').mkdir(exist_ok=True)  # Vercel 배포용 출력 폴더
+(root / 'public' / 'index.html').write_text(t, encoding='utf-8')
 print('index.html', len(t.encode()) // 1024, 'KB')
